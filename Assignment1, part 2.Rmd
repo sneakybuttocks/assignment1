@@ -113,7 +113,7 @@ library(ggplot2)
 - Load the data you saved last time (use read_csv(fileName))
 
 ```{r Load Data}
-setwd("C:/Users/Helene/Documents/RStudio working directory/Experimental Methods 3/assignment1")
+setwd("C:/Users/Helene/Documents/RStudio working directory/Experimental Methods 3/assignment1, part 1-2")
 CleanData = read.csv("CleanData.csv")
 ```
 
@@ -163,6 +163,7 @@ summary(LMage) #significant difference
 # AGE and GENDER
 ggplot(CleanData[CleanData$Visit == "1", ], aes(x=Diagnosis, y=Age, fill = Gender)) + geom_boxplot()
 ggplot(CleanData[CleanData$Visit == "1", ], aes(x=Diagnosis, y=Age, fill = Gender)) + geom_violin()
+CleanData$Gender = as.factor(CleanData$Gender)
 GLM_age_gender = glm(Gender ~ Diagnosis, family = binomial, CleanData, , CleanData$Visit == "1")
 summary(GLM_age_gender) #no significant difference
 
@@ -226,7 +227,7 @@ Smooth + geom_smooth() +
   labs(title="Language development", x="Visits", y="Mean Length of Utterance (MLU)") +
   theme(plot.title = element_text(hjust=0.5)) +
   geom_jitter(width=0.2)
-#Pretty colors lol... scale_color_manual(values=c("skyblue4", "red2"))
+#Pretty colors... scale_color_manual(values=c("skyblue4", "red2"))
 ```
    
    
@@ -264,7 +265,7 @@ Chisquare p-value = 0.1555; meaning that we cannot reject the null hypothesis th
 
 Getting R-squared for the model:
 ```{r}
-r.squaredGLMM(LMEM)
+r.squaredGLMM(Original)
 ```
 R2c (conditional r2): Proportion of variance explained by both the fixed and random factors.
     80.62% of variance is explained by both fixed and random (the whole     model).   
@@ -282,7 +283,7 @@ If a non-random structure is evident in the residuals, it is a clear sign that t
 library(DHARMa)
 
 #Testing assumption of normality of residuals
-simulationOutput = simulateResiduals(fittedModel = LMEM, n = 250)
+simulationOutput = simulateResiduals(fittedModel = Original, n = 250)
 
 #Plot
 plotSimulatedResiduals(simulationOutput = simulationOutput)
@@ -354,19 +355,12 @@ r.squaredGLMM(Model3)
 Model4 = lmer(CHI_MLU ~ Visit + Diagnosis + VerbalIQ + types_CHI + (1+Visit|Child.ID), CleanData)
 summary(Model4)
 r.squaredGLMM(Model4)
-# Full model explains 84.79% of the variance in the outcome, while the fixed effects accounts for 72.27% of the variance.
-
-Model5 = lmer(CHI_MLU ~ Visit + Diagnosis + VerbalIQ + types_CHI + (1+Visit|Child.ID), CleanData)
-summary(Model5)
-r.squaredGLMM(Model5)
-# Full model explains 85.81% of the variance in the outcome, while the fixed effects accounts for 73.75% of the variance.
+# Full model explains 85.55% of the variance in the outcome, while the fixed effects accounts for 74.24% of the variance.
 
 BESTMODEL = lmer(CHI_MLU ~ Visit + Diagnosis + VerbalIQ + types_CHI + (1+Visit|Child.ID), CleanData)
+summary(BESTMODEL)
+r.squaredGLMM(BESTMODEL)
 
 ```
-
-REPORT OF THE RESULTS:
-
-We used R (R Core Team(2017)), and lme4 (Bates, Maechler, Bolker & Walker, 2015), MuMIN (Barton, 2016) and lmerTest (Kuznetsova, Brockhoff & Christensen, 2016) to perform a linear mi
 
 
